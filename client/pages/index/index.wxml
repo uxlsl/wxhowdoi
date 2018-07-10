@@ -1,0 +1,9 @@
+<!--index.wxml-->
+<import src="./wemark/wemark.wxml"/>
+<view>
+<view >
+  <input auto-focus placeholder="查询关键字" bindinput="inputQuery" type="text" class="myinput"/>
+  <button bindtap="query"> 确定 </button>
+</view>
+  <template is="wemark" data="{{...wemark}}"></template>
+</view>
