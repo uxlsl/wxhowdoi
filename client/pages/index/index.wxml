@@ -1,0 +1,8 @@
+<!--index.wxml-->
+<import src="./wemark/wemark.wxml"/>
+
+<view class="container">
+  <input auto-focus value=""/>
+  <text> {{ msg }} </text>
+  <template is="wemark" data="{{...wemark}}"></template>
+</view>
