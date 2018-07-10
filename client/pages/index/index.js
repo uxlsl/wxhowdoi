@@ -1,28 +1,38 @@
-//index.js
 var wemark = require('wemark/wemark');
-var md = '# hello, world\n\nI love you, wemark! \n\n## second';
-//获取应用实例
 const app = getApp()
+
+var md = '# hello, world';
 
 Page({
   data: {
-    msg: null,
+    query: null,
   },
-  onLoad: function (){
-    var that = this
-    wx.request({
-      url: 'https://www.linsl2018.top:5023/hello', 
-      success: function (res) {
-        console.log(res.data)
-        that.setData({
-          msg: res.data.result
-        })
-      }
-    })
-  },
-  onReady: function () {
+  onLoad: function() {},
+  onReady: function() {
     wemark.parse(md, this, {
       name: 'wemark'
     })
+  },
+  inputQuery: function (e) {
+    this.setData({
+      query: e.detail.value
+    })
+  },
+  query: function() {
+    console.log(this.data.query)
+    var that = this
+    wx.request({
+      url: 'https://www.linsl2018.top:5023/hello',
+      data: {
+        query:this.data.query
+      },
+      success: function (res) {
+        console.log(res.data)
+        var md = res.data.result
+        wemark.parse(md, that, {
+          name: 'wemark'
+        })
+      }
+    })
   }
-  })
+})
