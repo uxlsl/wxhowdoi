@@ -1,23 +1,22 @@
-import ssl
 from sanic import Sanic
 from sanic.response import json
 from howdoi.howdoi import howdoi
 
 app = Sanic()
 
-@app.route('/')
+@app.route('/hello')
 async def query(request):
-    args = dict(request.args)
-    args.setdefault('query', 'hello')
-    args.setdefault('num_answers', 1)
-    args.setdefault('all', True)
-    args.setdefault('pos', 1)
-    args.setdefault('color', False)
-    result = howdoi(args).encode('utf-8', 'ignore')
-    return json({'result': result})
+    args = {'all': False, 
+            'clear_cache': False, 
+            'color': False, 
+            'pos': 1, 'version': False, 
+            'link': False, 
+            'query': ['python', 'insert', 'sort'], 
+            'num_answers': 1}
+    query = request.args.get('query')
+    args['query'] = query.split()
+    result = howdoi(args)
+    return json({'result': '```\n\n{}\n\n```'.format(result)})
 
 if __name__ == '__main__':
-    context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain("./server.crt", 
-            keyfile="./server.key")
-    app.run(host='0.0.0.0', port=8000, ssl=context, debug=True)
+    app.run(host='0.0.0.0', port=5025, debug=True)
