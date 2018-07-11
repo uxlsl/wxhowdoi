@@ -1,10 +1,9 @@
-from flask import Flask, request, jsonify
+import json
+from bottle import route, request, run
 from howdoi.howdoi import howdoi
 
-app = Flask(__name__)
 
-
-@app.route('/hello')
+@route('/hello')
 def query():
     args = {'all': False, 
             'clear_cache': False, 
@@ -14,12 +13,15 @@ def query():
             'query': ['python', 'insert', 'sort'], 
             'num_answers': 1}
 
-    query = request.args.get('query')
+    query = request.query.get('query')
     if query:
         args['query'] = query.split()
     else:
-        args['query'] = 'hello'
+        args['query'] = ['python', 'hello']
 
     result = howdoi(args)
-    return jsonify({'result': '```\n\n{}\n\n```'.format(result)})
+    return json.dumps({'result': '```\n\n{}\n\n```'.format(result)})
 
+
+if __name__ == '__main__':
+    run(host='0.0.0.0', port=5025, server='paste')
