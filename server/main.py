@@ -1,11 +1,11 @@
-from sanic import Sanic
-from sanic.response import json
+from flask import Flask, request, jsonify
 from howdoi.howdoi import howdoi
 
-app = Sanic()
+app = Flask(__name__)
+
 
 @app.route('/hello')
-async def query(request):
+def query():
     args = {'all': False, 
             'clear_cache': False, 
             'color': False, 
@@ -16,7 +16,5 @@ async def query(request):
     query = request.args.get('query')
     args['query'] = query.split()
     result = howdoi(args)
-    return json({'result': '```\n\n{}\n\n```'.format(result)})
+    return jsonify({'result': '```\n\n{}\n\n```'.format(result)})
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5025, debug=True)
