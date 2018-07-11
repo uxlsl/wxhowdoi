@@ -13,8 +13,13 @@ def query():
             'link': False, 
             'query': ['python', 'insert', 'sort'], 
             'num_answers': 1}
+
     query = request.args.get('query')
-    args['query'] = query.split()
+    if query:
+        args['query'] = query.split()
+    else:
+        args['query'] = 'hello'
+
     result = howdoi(args)
     return jsonify({'result': '```\n\n{}\n\n```'.format(result)})
 
