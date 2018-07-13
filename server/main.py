@@ -11,7 +11,7 @@ def query():
             'pos': 1, 'version': False, 
             'link': False, 
             'query': ['python', 'insert', 'sort'], 
-            'num_answers': 1}
+            'num_answers': 3}
 
     query = request.query.get('query')
     if query:
