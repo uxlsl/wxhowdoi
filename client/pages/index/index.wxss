@@ -1,2 +1,3 @@
 /**index.wxss**/
 @import './wemark/wemark.wxss'
+@import '/wxSearch/wxSearch.wxss'

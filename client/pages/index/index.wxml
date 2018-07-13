@@ -1,9 +1,12 @@
 <!--index.wxml-->
 <import src="./wemark/wemark.wxml"/>
-<view>
-<view >
-  <input auto-focus placeholder="查询关键字" bindinput="inputQuery" type="text" class="myinput"/>
-  <button bindtap="query"> 确定 </button>
+<import src="/wxSearch/wxSearch.wxml"/>
+
+<view class="wxSearch-section">
+  <view class="wxSearch-pancel">
+    <input bindinput="wxSearchInput" bindfocus="wxSerchFocus" value="{{wxSearchData.value}}" bindblur="wxSearchBlur" class="wxSearch-input" placeholder="搜索" />
+    <button class="wxSearch-button" bindtap="wxSearchFn" size="mini" plain="true">搜索</button>
+  </view>
 </view>
-  <template is="wemark" data="{{...wemark}}"></template>
-</view>
+<template is="wxSearch" data="{{wxSearchData}}"/>
+<template is="wemark" data="{{...wemark}}"></template>
