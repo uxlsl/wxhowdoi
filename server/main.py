@@ -8,7 +8,8 @@ from pygments.lexers import guess_lexer
 
 
 def highlight(code):
-    lexer = guess_lexer(code)
+    #lexer = guess_lexer(code)
+    lexer = get_lexer_by_name('python')
     formatter = HtmlFormatter()
     code_hl = pygments.highlight(code, lexer, formatter)
     code_hl = code_hl.replace('\n', '<br>')
