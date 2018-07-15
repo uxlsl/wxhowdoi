@@ -2,6 +2,16 @@ import json
 from bottle import route, request, run
 from howdoi.howdoi import howdoi
 
+import pygments
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers import guess_lexer
+
+
+def highlight(code):
+    lexer = guess_lexer(code)
+    formatter = HtmlFormatter()
+    code_hl = pygments.highlight(code, lexer, formatter)
+    return code_hl
 
 @route('/hello')
 def query():
@@ -11,7 +21,7 @@ def query():
             'pos': 1, 'version': False, 
             'link': False, 
             'query': ['python', 'insert', 'sort'], 
-            'num_answers': 3}
+            'num_answers': 1}
 
     query = request.query.get('query')
     if query:
@@ -20,7 +30,8 @@ def query():
         args['query'] = ['python', 'hello']
 
     result = howdoi(args)
-    return json.dumps({'result': '```\n\n{}\n\n```'.format(result)})
+    result = highlight(result)
+    return json.dumps({'result': result})
 
 
 if __name__ == '__main__':
