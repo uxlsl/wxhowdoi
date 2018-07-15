@@ -3,12 +3,10 @@ var WxSearch = require('../../wxSearch/wxSearch.js')
 
 const app = getApp()
 
-
-var md = '# hello, world';
+var md = '```print("hello world")```';
 
 Page({
   data: {
-    query: null,
   },
   onLoad: function() {
     var that = this
@@ -17,17 +15,15 @@ Page({
     WxSearch.initMindKeys(['python flask', 'python django', 'python scrapy', 'python requests']);
   },
   onReady: function() {
+    this.data.wxSearchData.value = 'print stack trace python'
+    this.query()
+    /*
     wemark.parse(md, this, {
       name: 'wemark'
     })
-  },
-  inputQuery: function(e) {
-    this.setData({
-      query: e.detail.value
-    })
+    */
   },
   query: function() {
-    console.log(this.data.query)
     var that = this
     wx.request({
       url: 'https://www.linsl2018.top:5023/hello',
@@ -44,36 +40,44 @@ Page({
     })
   },
   wxSearchFn: function(e) {
+    console.log('wxSearchFn')
     var that = this
     WxSearch.wxSearchAddHisKey(that);
     this.query()
 
   },
   wxSearchInput: function(e) {
+    console.log('wxSearchInput')
     var that = this
     WxSearch.wxSearchInput(e, that);
   },
   wxSerchFocus: function(e) {
+    console.log('wxSearchFocus')
     var that = this
     WxSearch.wxSearchFocus(e, that);
   },
   wxSearchBlur: function(e) {
-    var that = this
-    WxSearch.wxSearchBlur(e, that);
+ //   console.log('wxSearchBlur')
+ //   var that = this
+ //   WxSearch.wxSearchBlur(e, that);
   },
   wxSearchKeyTap: function(e) {
+    console.log('wxSearchKeyTap')
     var that = this
     WxSearch.wxSearchKeyTap(e, that);
   },
   wxSearchDeleteKey: function(e) {
+    console.log('wxSearchDeleteKey')
     var that = this
     WxSearch.wxSearchDeleteKey(e, that);
   },
   wxSearchDeleteAll: function(e) {
+    console.log('wxSearchDeleteAll')
     var that = this;
     WxSearch.wxSearchDeleteAll(that);
   },
   wxSearchTap: function(e) {
+    console.log('wxSearchTap')
     var that = this
     WxSearch.wxSearchHiddenPancel(that);
   }

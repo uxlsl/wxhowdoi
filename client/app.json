@@ -5,7 +5,7 @@
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "howdoi",
+    "navigationBarTitleText": "代码段搜索器",
     "navigationBarTextStyle":"black"
   }
 }
