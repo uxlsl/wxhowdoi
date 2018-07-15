@@ -11,6 +11,8 @@ def highlight(code):
     lexer = guess_lexer(code)
     formatter = HtmlFormatter()
     code_hl = pygments.highlight(code, lexer, formatter)
+    code_hl = code_hl.replace('\n', '<br>')
+    code_hl = code_hl.replace('  ', '&nbsp;')
     return code_hl
 
 @route('/hello')
