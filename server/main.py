@@ -4,7 +4,7 @@ from howdoi.howdoi import howdoi
 
 import pygments
 from pygments.formatters.html import HtmlFormatter
-from pygments.lexers import guess_lexer
+from pygments.lexers import guess_lexer, get_lexer_by_name
 
 
 def highlight(code):
