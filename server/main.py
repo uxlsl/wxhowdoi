@@ -7,14 +7,27 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import guess_lexer, get_lexer_by_name
 
 
+def pre_to_div(html):
+    html = html.replace('pre', 'div')
+    html = html.replace('\n', '<br>')
+    ret = ''
+    count = 0
+    for c in html:
+        if c == '<' or c == '>':
+            count += 1
+        if c == ' ' and count % 2 == 0:
+            ret += '&nbsp'
+        else:
+            ret += c
+    return ret
+
+
 def highlight(code):
-    #lexer = guess_lexer(code)
-    lexer = get_lexer_by_name('python')
+    lexer = guess_lexer(code)
     formatter = HtmlFormatter()
     code_hl = pygments.highlight(code, lexer, formatter)
-    code_hl = code_hl.replace('\n', '<br>')
-    code_hl = code_hl.replace(' ', '&nbsp;')
-    return code_hl
+    return pre_to_div(code_hl)
+
 
 @route('/hello')
 def query():
@@ -38,4 +51,4 @@ def query():
 
 
 if __name__ == '__main__':
-    run(host='0.0.0.0', port=5025, server='paste')
+    run(host='0.0.0.0', port=5025)
