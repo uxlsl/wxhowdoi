@@ -1,3 +1,4 @@
+import re
 import json
 from bottle import route, request, run
 from howdoi.howdoi import howdoi
@@ -26,18 +27,24 @@ def highlight(code):
     lexer = guess_lexer(code)
     formatter = HtmlFormatter(linenos='inline', linenostart=0)
     code_hl = pygments.highlight(code, lexer, formatter)
-    return pre_to_div(code_hl)
+    code_hl = pre_to_div(code_hl)
+    code_hl = re.sub('<span class="lineno">(\d+)&nbsp;</span>((&nbsp;)*)',
+                     '<span class="lineno">\\1&nbsp;\\2</span>', code_hl)
+    return code_hl
 
 
 @route('/hello')
 def query():
-    args = {'all': False, 
-            'clear_cache': False, 
-            'color': False, 
-            'pos': 1, 'version': False, 
-            'link': False, 
-            'query': ['python', 'insert', 'sort'], 
-            'num_answers': 1}
+    args = {
+        'all': False,
+        'clear_cache': False,
+        'color': False,
+        'pos': 1,
+        'version': False,
+        'link': False,
+        'query': ['python', 'insert', 'sort'],
+        'num_answers': 1
+    }
 
     query = request.query.get('query')
     if query:
