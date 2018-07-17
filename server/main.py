@@ -11,6 +11,7 @@ from pygments.lexers import guess_lexer, get_lexer_by_name
 def pre_to_div(html):
     html = html.replace('pre', 'div')
     html = html.replace('\n', '<br>')
+    html = html.replace('class="highlight"', '')
     ret = ''
     count = 0
     for c in html:
