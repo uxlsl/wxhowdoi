@@ -1,9 +1,8 @@
-var wemark = require('wemark/wemark');
-var WxSearch = require('../../wxSearch/wxSearch.js')
 
+var WxSearch = require('../../wxSearch/wxSearch.js')
+var WxParse = require('../../wxParse/wxParse.js');
 const app = getApp()
 
-var md = '```print("hello world")```';
 
 Page({
   data: {
@@ -17,11 +16,6 @@ Page({
   onReady: function() {
     this.data.wxSearchData.value = 'print stack trace python'
     this.query()
-    /*
-    wemark.parse(md, this, {
-      name: 'wemark'
-    })
-    */
   },
   query: function() {
     var that = this
@@ -32,10 +26,8 @@ Page({
       },
       success: function(res) {
         console.log(res.data)
-        var md = res.data.result
-        wemark.parse(md, that, {
-          name: 'wemark'
-        })
+        var code = res.data.result
+        WxParse.wxParse('article', 'html', code, that, 5);
       }
     })
   },

@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<import src="./wemark/wemark.wxml"/>
+<import src="/wxParse/wxParse.wxml"/>
 <import src="/wxSearch/wxSearch.wxml"/>
 
 <view class="wxSearch-section">
@@ -9,4 +9,4 @@
   </view>
 </view>
 <template is="wxSearch" data="{{wxSearchData}}"/>
-<template is="wemark" data="{{...wemark}}"></template>
+<template is="wxParse" data="{{wxParseData:article.nodes}}"/>
