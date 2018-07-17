@@ -16,7 +16,7 @@ def pre_to_div(html):
         if c == '<' or c == '>':
             count += 1
         if c == ' ' and count % 2 == 0:
-            ret += '&nbsp'
+            ret += '&nbsp;'
         else:
             ret += c
     return ret
