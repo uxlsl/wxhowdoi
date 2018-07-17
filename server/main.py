@@ -24,7 +24,7 @@ def pre_to_div(html):
 
 def highlight(code):
     lexer = guess_lexer(code)
-    formatter = HtmlFormatter()
+    formatter = HtmlFormatter(linenos='inline', linenostart=0)
     code_hl = pygments.highlight(code, lexer, formatter)
     return pre_to_div(code_hl)
 
