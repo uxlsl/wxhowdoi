@@ -17,7 +17,7 @@ def pre_to_div(html):
         if c == '<' or c == '>':
             count += 1
         if c == ' ' and count % 2 == 0:
-            ret += '&nbsp;'
+            ret += '<span style="color:white">*</span>'
         else:
             ret += c
     return ret
@@ -28,8 +28,6 @@ def highlight(code):
     formatter = HtmlFormatter(linenos='inline', linenostart=0)
     code_hl = pygments.highlight(code, lexer, formatter)
     code_hl = pre_to_div(code_hl)
-    code_hl = re.sub('<span class="lineno">(\d+)&nbsp;</span>((&nbsp;)*)',
-                     '<span class="lineno">\\1&nbsp;\\2</span>', code_hl)
     return code_hl
 
 
