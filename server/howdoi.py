@@ -26,7 +26,8 @@ from pyquery import PyQuery as pq
 from requests.exceptions import ConnectionError
 from requests.exceptions import SSLError
 
-__version__='1.1.12'
+
+__version__ = '1.1.12'
 
 # Handle imports for Python 2 and 3
 if sys.version < '3':
@@ -73,6 +74,7 @@ XDG_CACHE_DIR = os.environ.get('XDG_CACHE_HOME',
 CACHE_DIR = os.path.join(XDG_CACHE_DIR, 'howdoi')
 CACHE_FILE = os.path.join(CACHE_DIR, 'cache{0}'.format(
     sys.version_info[0] if sys.version_info[0] == 3 else ''))
+howdoi_session = requests.session()
 
 
 def get_proxies():
@@ -89,12 +91,17 @@ def get_proxies():
 
 def _get_result(url):
     try:
-        return requests.get(url, headers={'User-Agent': random.choice(USER_AGENTS)}, proxies=get_proxies(),
-                            verify=VERIFY_SSL_CERTIFICATE).text
+        return howdoi_session.get(url, headers={'User-Agent': random.choice(USER_AGENTS)}, proxies=get_proxies(),
+                                  verify=VERIFY_SSL_CERTIFICATE).text
     except requests.exceptions.SSLError as e:
         print('[ERROR] Encountered an SSL Error. Try using HTTP instead of '
               'HTTPS by setting the environment variable "HOWDOI_DISABLE_SSL".\n')
         raise e
+
+
+def _get_text(element):
+    ''' return inner text in pyquery element '''
+    return element.text(squash_space=False)
 
 
 def _extract_links_from_bing(html):
@@ -185,11 +192,11 @@ def _get_answer(args, links):
     args['tags'] = [t.text for t in html('.post-tag')]
 
     if not instructions and not args['all']:
-        text = first_answer.find('.post-text').eq(0).text()
+        text = _get_text(first_answer.find('.post-text').eq(0))
     elif args['all']:
         texts = []
         for html_tag in first_answer.items('.post-text > *'):
-            current_text = html_tag.text()
+            current_text = _get_text(html_tag)
             if current_text:
                 if html_tag[0].tag in ['pre', 'code']:
                     texts.append(_format_output(current_text, args))
@@ -197,7 +204,7 @@ def _get_answer(args, links):
                     texts.append(current_text)
         text = '\n'.join(texts)
     else:
-        text = _format_output(instructions.eq(0).text(), args)
+        text = _format_output(_get_text(instructions.eq(0)), args)
     if text is None:
         text = NO_ANSWER_MSG
     text = text.strip()
@@ -218,6 +225,9 @@ def _get_instructions(args):
 
     answers = []
     initial_position = args['pos']
+    spliter_length = 30
+    answer_spliter = '\n' + '=' * spliter_length + '\n\n'
+
     for answer_number in range(args['num_answers']):
         current_position = answer_number + initial_position
         args['pos'] = current_position
@@ -229,16 +239,17 @@ def _get_instructions(args):
             answer = format_answer(link, answer, star_headers)
         answer += '\n'
         answers.append(answer)
-    return '\n'.join(answers)
+    return answer_spliter.join(answers)
 
 
 def format_answer(link, answer, star_headers):
     if star_headers:
         try:
             program_name = guess_lexer(answer).name
-        except Exception as e:
+        except Exception:
             program_name = ''
-        return ANSWER_HEADER.format(link, answer, STAR_HEADER, program_name)
+        return ANSWER_HEADER.format(link, answer, 
+                STAR_HEADER, program_name.lower())
     return answer
 
 
@@ -303,13 +314,15 @@ def command_line_runner():
 
     if os.getenv('HOWDOI_COLORIZE'):
         args['color'] = True
-    print(args)
+
     utf8_result = howdoi(args).encode('utf-8', 'ignore')
     if sys.version < '3':
         print(utf8_result)
     else:
         # Write UTF-8 to stdout: https://stackoverflow.com/a/3603160
         sys.stdout.buffer.write(utf8_result)
+    # close the session to release connection
+    howdoi_session.close()
 
 
 if __name__ == '__main__':
