@@ -1,6 +1,6 @@
 import json
 from bottle import route, request, run
-from howdoi.howdoi import howdoi
+from howdoi import howdoi
 
 
 @route('/hello')
@@ -20,7 +20,8 @@ def query():
         args['query'] = ['python', 'hello']
 
     result = howdoi(args)
-    return json.dumps({'result': '```\n\n{}\n\n```'.format(result)})
+    print(result)
+    return json.dumps({'result': result})
 
 
 if __name__ == '__main__':
