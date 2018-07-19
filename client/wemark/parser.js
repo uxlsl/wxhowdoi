@@ -2,23 +2,15 @@ var Remarkable = require('./remarkable');
 var parser = new Remarkable({
 	html: true
 });
+var prism = require('./prism');
 
-function parse(md, page, options){
+function parse(md, options){
 
 	if(!options) options = {};
-	if(!options.name) options.name = 'wemark';
-
 	var tokens = parser.parse(md, {});
 
 	// markdwon渲染列表
 	var renderList = [];
-	// 图片高度数组
-	var imageHeight = {};
-	// 返回的数据
-	var ret = {
-		renderList: renderList,
-		imageHeight: imageHeight
-	};
 
 	var env = [];
 	// 记录当前list深度
@@ -31,11 +23,12 @@ function parse(md, page, options){
 	var getInlineContent = function(inlineToken){
 		var ret = [];
 		var env;
+		var tokenData = {};
 
 		if(inlineToken.type === 'htmlblock'){
 			// 匹配video
 			// 兼容video[src]和video > source[src]
-			var videoRegExp = /<video.*?src\s*=\s*['"]*([^\s^'^"]+).*?(poster\s*=\s*['"]*([^\s^'^"]+).*?)?(?:\/\s*\>|<\/video\>)/g;
+			var videoRegExp = /<video.*?src\s*=\s*['"]*([^\s^'^"]+).*?(poster\s*=\s*['"]*([^\s^'^"]+).*?)?(?:\/\s*>|<\/video>)/g;
 
 			var match;
 			var html = inlineToken.content.replace(/\n/g, '');
@@ -45,28 +38,49 @@ function parse(md, page, options){
 						type: 'video',
 						src: match[1]
 					};
-					
+
 					if(match[3]) {
 						retParam.poster = match[3];
 					}
-					
+
 					ret.push(retParam);
 				}
 			}
 		}else{
+			// console.log(inlineToken);
 			inlineToken.children && inlineToken.children.forEach(function(token, index){
 				if(['text', 'code'].indexOf(token.type) > -1){
 					ret.push({
 						type: env || token.type,
-						content: token.content
+						content: token.content,
+						data: tokenData
 					});
 					env = '';
+					tokenData = {};
 				}else if(token.type === 'del_open'){
 					env = 'deleted';
+				}else if (token.type === 'softbreak') {
+					// todo:处理li的问题
+					/* ret.push({
+						type: 'text',
+						content: ' '
+					}); */
+				}else if (token.type === 'hardbreak') {
+					ret.push({
+						type: 'text',
+						content: '\n'
+					});
 				}else if(token.type === 'strong_open'){
 					env = 'strong';
-				}else if(token.type === 'em_open'){
+				}else if (token.type === 'em_open') {
 					env = 'em';
+				}else if (token.type === 'link_open') {
+					if(options.link){
+						env = 'link';
+						tokenData = {
+							href: token.href
+						};
+					}
 				}else if(token.type === 'image'){
 					ret.push({
 						type: token.type,
@@ -88,7 +102,7 @@ function parse(md, page, options){
 				content: getInlineContent(tokens[index+1])
 			};
 		}else if(blockToken.type === 'paragraph_open'){
-			var type = 'p';
+			// var type = 'p';
 			var prefix = '';
 			if(env.length){
 				prefix = env.join('_') + '_';
@@ -108,15 +122,17 @@ function parse(md, page, options){
 				type: prefix + 'p',
 				content: content
 			};
-		}else if(blockToken.type === 'fence'){
+		}else if(blockToken.type === 'fence' || blockToken.type === 'code'){
+			content = blockToken.content;
+			var highlight = false;
+			if(options.highlight && blockToken.params && prism.languages[blockToken.params]){
+				content = prism.tokenize(content, prism.languages[blockToken.params]);
+				highlight = true;
+			}
 			return {
 				type: 'code',
-				content: blockToken.content
-			};
-		}else if(blockToken.type === 'code'){
-			return {
-				type: 'code',
-				content: blockToken.content
+				highlight: highlight,
+				content: content
 			};
 		}else if(blockToken.type === 'bullet_list_open'){
 			env.push('ul');
@@ -177,10 +193,7 @@ function parse(md, page, options){
 		});
 	});
 
-	var obj = {};
-	obj[options.name] = ret;
-	page.setData(obj);
-
+	return renderList;
 }
 
 module.exports = {

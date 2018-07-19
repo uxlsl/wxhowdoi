@@ -1,12 +1,16 @@
-var wemark = require('wemark/wemark');
 var WxSearch = require('../../wxSearch/wxSearch.js')
 
 const app = getApp()
 
-var md = '```print("hello world")```';
+var md = `
+\`\`\`python
+print "hello world"
+\`\`\`
+`
 
 Page({
   data: {
+    md:md
   },
   onLoad: function() {
     var that = this
@@ -17,11 +21,6 @@ Page({
   onReady: function() {
     this.data.wxSearchData.value = 'print stack trace python'
     this.query()
-    /*
-    wemark.parse(md, this, {
-      name: 'wemark'
-    })
-    */
   },
   query: function() {
     var that = this
@@ -32,10 +31,7 @@ Page({
       },
       success: function(res) {
         console.log(res.data)
-        var md = res.data.result
-        wemark.parse(md, that, {
-          name: 'wemark'
-        })
+        that.setData({'md': res.data.result})
       }
     })
   },
