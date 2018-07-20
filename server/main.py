@@ -20,7 +20,6 @@ def query():
         args['query'] = ['python', 'hello']
 
     result = howdoi(args)
-    print(result)
     return json.dumps({'result': result})
 
 
