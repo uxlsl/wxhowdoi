@@ -67,7 +67,7 @@ SEARCH_URLS = {
     'google': SCHEME + 'www.google.com/search?q=site:{0}%20{1}'
 }
 STAR_HEADER = u('\u2605')
-ANSWER_HEADER = u('{2}  Answer from {0} {2}\n```{3}\n\n{1}\n\n```')
+ANSWER_HEADER = u('{2}  Answer from [{0}]({0}) {2}\n```{3}\n\n{1}\n\n```')
 NO_ANSWER_MSG = '< no answer given >'
 XDG_CACHE_DIR = os.environ.get('XDG_CACHE_HOME',
                                os.path.join(os.path.expanduser('~'), '.cache'))
