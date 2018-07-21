@@ -3,7 +3,7 @@
 
 <view class="wxSearch-section">
   <view class="wxSearch-pancel">
-    <input bindinput="wxSearchInput" bindfocus="wxSerchFocus" value="{{wxSearchData.value}}" bindblur="wxSearchBlur" class="wxSearch-input" placeholder="print stack trace python" />
+    <input bindinput="wxSearchInput" bindfocus="wxSerchFocus" value="{{wxSearchData.value}}" bindblur="wxSearchBlur" class="wxSearch-input" placeholder="" />
     <view>
     <button class="wxSearch-button" bindtap="wxSearchFn" size="mini" plain="true">搜索</button>
     <button class="wxSearch-button" bindtap="copy" size="mini" plain="true" style="float:right">拷贝结果</button>

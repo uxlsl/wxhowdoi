@@ -2,20 +2,28 @@ var WxSearch = require('../../wxSearch/wxSearch.js')
 
 const app = getApp()
 
-var md = `*人生苦短，我用Python*`
+var md = `*人生苦短，我用Python!*`
 
 Page({
   data: {
     md:md
   },
-  onLoad: function() {
+  onLoad: function(options) {
+    console.log('onLoad-query:' + options.query);
     var that = this
     //初始化的时候渲染wxSearchdata 第二个为你的search高度
     WxSearch.init(that, 43, ['python flask', 'python django', 'python scrapy', 'python requests']);
     WxSearch.initMindKeys(['python flask', 'python django', 'python scrapy', 'python requests']);
+    if (options.query) {
+      this.data.wxSearchData.value = options.query
+    }
   },
   onReady: function() {
-    this.data.wxSearchData.value = 'print stack trace python'
+    if (this.data.wxSearchData.value == null || this.data.wxSearchData.value == ''){
+      this.data.wxSearchData.value = 'print stack trace python'
+    } 
+    var wxSearchData = this.data.wxSearchData
+    this.setData({ wxSearchData: wxSearchData })
     this.query()
   },
   query: function() {
@@ -71,6 +79,7 @@ Page({
     console.log('wxSearchKeyTap')
     var that = this
     WxSearch.wxSearchKeyTap(e, that);
+    this.query();
   },
   wxSearchDeleteKey: function(e) {
     console.log('wxSearchDeleteKey')
@@ -86,5 +95,15 @@ Page({
     console.log('wxSearchTap')
     var that = this
     WxSearch.wxSearchHiddenPancel(that);
+  },
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+      title: '代码段搜索器',
+      path: '/pages/index/index?query=' + this.data.wxSearchData.value
+    }
   }
 })
