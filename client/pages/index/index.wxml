@@ -1,12 +1,14 @@
 <!--index.wxml-->
-<import src="/wxSearch/wxSearch.wxml"/>
+<import src="/wxSearch/wxSearch.wxml" />
 
 <view class="wxSearch-section">
   <view class="wxSearch-pancel">
     <input bindinput="wxSearchInput" bindfocus="wxSerchFocus" value="{{wxSearchData.value}}" bindblur="wxSearchBlur" class="wxSearch-input" placeholder="print stack trace python" />
+    <view>
     <button class="wxSearch-button" bindtap="wxSearchFn" size="mini" plain="true">搜索</button>
+    <button class="wxSearch-button" bindtap="copy" size="mini" plain="true" style="float:right">拷贝结果</button>
+    </view>
   </view>
 </view>
-<template is="wxSearch" data="{{wxSearchData}}"/>
+<template is="wxSearch" data="{{wxSearchData}}" />
 <wemark md="{{md}}" link highlight type="wemark"></wemark>
-

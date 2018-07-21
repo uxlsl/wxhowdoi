@@ -2,11 +2,7 @@ var WxSearch = require('../../wxSearch/wxSearch.js')
 
 const app = getApp()
 
-var md = `
-\`\`\`python
-print "hello world"
-\`\`\`
-`
+var md = `*人生苦短，我用Python*`
 
 Page({
   data: {
@@ -32,6 +28,20 @@ Page({
       success: function(res) {
         console.log(res.data)
         that.setData({'md': res.data.result})
+      }
+    })
+  },
+  copy: function(){
+    console.log("copy")
+    var that = this
+    wx.setClipboardData({
+      data: that.data.md,
+      success: function (res) {
+        wx.getClipboardData({
+          success: function (res) {
+            console.log(res.data) // data
+          }
+        })
       }
     })
   },
